@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
       },
     ],
   })
-    .then((dbCategoryInfo) => res.json(dbCategoryInfo))
+    .then((dbCategoryData) => res.json(dbCategoryData))
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -36,14 +36,14 @@ router.get("/:id", (req, res) => {
       },
     ],
   })
-    .then((dbCategoryInfo) => {
-      if (!dbCategoryInfo) {
+    .then((dbCategoryData) => {
+      if (!dbCategoryData) {
         res
           .status(404)
           .json({ message: "No results found with category name" });
         return;
       }
-      res.json(dbCategoryInfo);
+      res.json(dbCategoryData);
     })
     .catch((err) => {
       console.log(err);
@@ -56,7 +56,7 @@ router.post("/", (req, res) => {
   Category.create({
     category_name: req.body.category_name,
   })
-    .then((dbCategoryInfo) => res.json(dbCategoryInfo))
+    .then((dbCategoryData) => res.json(dbCategoryData))
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -70,14 +70,14 @@ router.put("/:id", (req, res) => {
       id: req.params.id,
     },
   })
-    .then((dbCategoryInfo) => {
-      if (!dbCategoryInfo[0]) {
+    .then((dbCategoryData) => {
+      if (!dbCategoryData[0]) {
         res
           .status(404)
           .json({ message: "No results found with category id" });
         return;
       }
-      res.json(dbCategoryInfo);
+      res.json(dbCategoryData);
     })
     .catch((err) => {
       console.log(err);
@@ -87,7 +87,24 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   // delete a category by its `id` value
-  
+  Category.destroy({
+    where: {
+      id:req.params.id
+    }
+  })
+  .then(dbCategoryData => {
+    if (!dbCategoryData) {
+      res
+        .status(404)
+        .json({ message: "No results found with category id" });
+      return;
+    }
+    res.json(dbCategoryData);
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 module.exports = router;
